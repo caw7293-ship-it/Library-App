@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Library App</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+    text-align: center;
+}
+
+h1 {
+    background: #1e3a8a;
+    padding: 15px;
+}
+
+input {
+    padding: 10px;
+    width: 250px;
+}
+
+button {
+    padding: 10px;
+    margin: 5px;
+    background: #3b82f6;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #2563eb;
+}
+
+.card {
+    background: #1e293b;
+    margin: 10px auto;
+    padding: 15px;
+    width: 300px;
+    border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>📚 Library App</h1>
+
+<div>
+    <input id="username" placeholder="Username">
+    <input id="password" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+</div>
+
+<br>
+
+<input id="search" placeholder="Search courses">
+<button onclick="searchCourses()">Search</button>
+
+<h2>Courses</h2>
+<div id="courses"></div>
+
+<h2>⭐ Favorites</h2>
+<div id="favorites"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
