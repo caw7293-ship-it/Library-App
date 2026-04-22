@@ -1,29 +1,62 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Course = require('../models/Course');
 
-// GET all courses
-router.get('/', async (req, res) => {
+const User = require("../models/User"); // make sure path is correct
+const auth = require("../middleware/auth"); // adjust if needed
+
+// ======================
+// ADD FAVORITE + BADGES + ACTIVITY
+// ======================
+router.post("/favorite/:id", auth, async (req, res) => {
     try {
-        const courses = await Course.find();
-        res.json(courses);
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        let added = false;
+
+        // ✅ Add favorite (only if not already added)
+        if (!user.favorites.includes(req.params.id)) {
+            user.favorites.push(req.params.id);
+            added = true;
+        }
+
+        // ======================
+        // 🏆 BADGE SYSTEM
+        // ======================
+        const count = user.favorites.length;
+
+        if (count >= 1 && !user.badges.includes("⭐ First Favorite")) {
+            user.badges.push("⭐ First Favorite");
+        }
+
+        if (count >= 5 && !user.badges.includes("📚 5 Courses Saved")) {
+            user.badges.push("📚 5 Courses Saved");
+        }
+
+        if (count >= 10 && !user.badges.includes("🎓 10 Courses Saved")) {
+            user.badges.push("🎓 10 Courses Saved");
+        }
+
+        // ======================
+        // 📊 ACTIVITY LOG
+        // ======================
+        if (added) {
+            user.activity.unshift({
+                action: "Favorited a course",
+                course: req.params.id,
+                date: new Date()
+            });
+        }
+
+        await user.save();
+
+        res.json(user);
     } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// SEARCH courses by keyword
-router.get('/search/:keyword', async (req, res) => {
-    try {
-        const keyword = req.params.keyword;
-
-        const courses = await Course.find({
-            title: { $regex: keyword, $options: 'i' }
-        });
-
-        res.json(courses);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
     }
 });
 

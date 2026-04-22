@@ -2,70 +2,161 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Library App</title>
+<title>Digital Library</title>
 
 <style>
 body {
-    font-family: Arial;
-    background: #0f172a;
-    color: white;
-    text-align: center;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0b1220;
+    color: #e5e7eb;
 }
 
-h1 {
-    background: #1e3a8a;
+/* HEADER */
+header {
+    background: #111827;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 20px;
+}
+
+header .actions button {
+    margin-left: 10px;
+}
+
+/* LAYOUT */
+.container {
+    display: flex;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 220px;
+    background: #0f172a;
+    height: 100vh;
     padding: 15px;
 }
 
-input {
+.sidebar button {
+    width: 100%;
+    margin-bottom: 10px;
     padding: 10px;
-    width: 250px;
+    background: #1f2937;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.sidebar button:hover {
+    background: #374151;
+}
+
+/* MAIN */
+.main {
+    flex: 1;
+    padding: 20px;
+}
+
+/* SEARCH */
+.search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 15px;
+}
+
+/* CARD */
+.card {
+    background: #111827;
+    padding: 15px;
+    border-radius: 10px;
+    transition: 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    background: #1f2937;
 }
 
 button {
-    padding: 10px;
-    margin: 5px;
-    background: #3b82f6;
+    padding: 8px;
     border: none;
-    color: white;
+    border-radius: 5px;
     cursor: pointer;
+    background: #2563eb;
+    color: white;
 }
 
 button:hover {
-    background: #2563eb;
-}
-
-.card {
-    background: #1e293b;
-    margin: 10px auto;
-    padding: 15px;
-    width: 300px;
-    border-radius: 10px;
+    background: #1d4ed8;
 }
 </style>
 </head>
 
 <body>
 
-<h1>📚 Library App</h1>
+<!-- HEADER -->
+<header>
+    <h1>📚 Digital Library</h1>
 
-<div>
-    <input id="username" placeholder="Username">
-    <input id="password" type="password" placeholder="Password">
-    <button onclick="login()">Login</button>
+    <div class="actions">
+        <button onclick="openProfile()">👤 Profile</button>
+        <button onclick="openSettings()">⚙️ Settings</button>
+        <button onclick="logout()">Logout</button>
+    </div>
+</header>
+
+<!-- MAIN CONTAINER -->
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <button onclick="loadCourses()">🏠 All Courses</button>
+        <button onclick="loadFavorites()">⭐ Favorites</button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+        <!-- SEARCH -->
+        <div class="search-bar">
+            <input id="search" placeholder="Search courses..." oninput="searchCourses()">
+        </div>
+
+        <!-- COURSES -->
+        <h2>Courses</h2>
+        <div id="courses" class="grid"></div>
+
+        <!-- FAVORITES -->
+        <h2>⭐ Favorites</h2>
+        <div id="favorites" class="grid"></div>
+
+    </div>
+
 </div>
 
-<br>
-
-<input id="search" placeholder="Search courses">
-<button onclick="searchCourses()">Search</button>
-
-<h2>Courses</h2>
-<div id="courses"></div>
-
-<h2>⭐ Favorites</h2>
-<div id="favorites"></div>
-
+<!-- JS -->
 <script src="app.js"></script>
+
 </body>
 </html>

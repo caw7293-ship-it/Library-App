@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Profile</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #0b1220;
+    color: white;
+    margin: 0;
+}
+
+header {
+    background: #111827;
+    padding: 15px;
+    text-align: center;
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+}
+
+.card {
+    background: #111827;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+}
+
+/* BADGES STYLE */
+.badge {
+    background: #1f2937;
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 6px;
+}
+
+button {
+    padding: 10px;
+    background: #2563eb;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>👤 Profile</h1>
+</header>
+
+<div class="container">
+
+    <!-- USER INFO -->
+    <div class="card">
+        <h2 id="username">Loading...</h2>
+        <p id="stats"></p>
+    </div>
+
+    <!-- FAVORITES -->
+    <div class="card">
+        <h3>📘 Favorites</h3>
+        <div id="favorites"></div>
+    </div>
+
+    <!-- BADGES -->
+    <div class="card">
+        <h3>🏆 Badges</h3>
+        <div id="badges"></div>
+    </div>
+
+    <!-- LOGOUT -->
+    <div class="card">
+        <button onclick="logout()">Logout</button>
+    </div>
+
+</div>
+
+<script>
+const API = "https://bookish-pancake-g4wj6j9j6q64hgx-5000.app.github.dev/api";
+let token = localStorage.getItem("token");
+
+// ======================
+// LOAD PROFILE
+// ======================
+async function loadProfile() {
+    try {
+        const res = await fetch(`${API}/users/me`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!res.ok) {
+            document.getElementById("username").innerText = "Failed to load profile";
+            return;
+        }
+
+        const user = await res.json();
+
+        // ======================
+        // USER INFO
+        // ======================
+        document.getElementById("username").innerText =
+            "User: " + (user.username || "Unknown");
+
+        document.getElementById("stats").innerText =
+            "Saved Courses: " + (user.favorites?.length || 0);
+
+        // ======================
+        // FAVORITES (FIXED SAFE DISPLAY)
+        // ======================
+        const favDiv = document.getElementById("favorites");
+        favDiv.innerHTML = "";
+
+        if (!user.favorites || user.favorites.length === 0) {
+            favDiv.innerHTML = "<p>No favorites yet</p>";
+        } else {
+            user.favorites.forEach(f => {
+                const item = document.createElement("div");
+                item.className = "badge";
+
+                item.innerText =
+                    "📘 " + (f.title || f.name || "Course " + (f._id || ""));
+
+                favDiv.appendChild(item);
+            });
+        }
+
+        // ======================
+        // BADGES (SAFE)
+        // ======================
+        const badgeDiv = document.getElementById("badges");
+        badgeDiv.innerHTML = "";
+
+        if (!user.badges || user.badges.length === 0) {
+            badgeDiv.innerHTML = "<p>No badges yet</p>";
+        } else {
+            user.badges.forEach(b => {
+                const el = document.createElement("div");
+                el.className = "badge";
+                el.innerText = b;
+                badgeDiv.appendChild(el);
+            });
+        }
+
+    } catch (err) {
+        console.error("Profile error:", err);
+        document.getElementById("username").innerText =
+            "Error loading profile";
+    }
+}
+
+// ======================
+// LOGOUT
+// ======================
+function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "/";
+}
+
+// ======================
+// INIT
+// ======================
+loadProfile();
+</script>
+
+</body>
+</html>
